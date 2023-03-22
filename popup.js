@@ -33,7 +33,7 @@ const aliyunDomain = "aliyun.com";
     }
 
     // 文本点击事件：账号切换
-    const selectableTexts = document.getElementsByClassName("selectable");
+    const selectableTexts = document.getElementsByClassName("text");
     Array.from(selectableTexts).forEach(element => element.addEventListener("click", accountSwitchListener));
     // 按钮点击事件：账号删除
     const deleteButtons = document.getElementsByClassName("delete");
@@ -44,6 +44,10 @@ const aliyunDomain = "aliyun.com";
 })();
 
 async function accountSwitchListener(event) {
+    // 对已选中的不作响应
+    if (event.target.classList.contains("selected")) {
+        return;
+    }
     const account = event.target.parentElement.id.split("-")[1];
     // 移除当前cookie
     const currentCookies = await chrome.cookies.getAll({domain: aliyunDomain});
