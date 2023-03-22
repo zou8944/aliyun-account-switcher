@@ -20,7 +20,7 @@
     "http://*/*"
   ],
   "action": {
-    "default_popup": "popup.html",
+    "default_popup": "popup/popup.html",
     "default_title": "阿里云账户切换器"
   },
   "background": {
