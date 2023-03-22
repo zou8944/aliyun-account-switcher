@@ -74,7 +74,7 @@ async function accountDeletionListener(event) {
     const currentAccount = currentAccountCookie?.value?.replaceAll("\"", "");
     if (account === currentAccount) {
         currentCookies.map(deleteCookie);
-        await refreshAllAliyunTabs()
+        await refreshAllAliyunTabs();
     }
     // 移除当前行的html元素
     const currentRow = event.target.parentElement;

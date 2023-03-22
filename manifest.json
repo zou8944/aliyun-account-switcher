@@ -22,5 +22,8 @@
   "action": {
     "default_popup": "popup.html",
     "default_title": "阿里云账户切换器"
+  },
+  "background": {
+    "service_worker": "service-worker.js"
   }
 }
