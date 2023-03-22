@@ -3,6 +3,12 @@
   "name": "阿里云账户切换器",
   "description": "支持切换阿里云账户",
   "version": "1.0",
+  "icons": {
+    "16": "icons/icon-16.png",
+    "32": "icons/icon-32.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
   "permissions": [
     "cookies",
     "tabs",
@@ -15,10 +21,6 @@
   ],
   "action": {
     "default_popup": "popup.html",
-    "default_title": "阿里云账户切换器",
-    "icons": {
-      "48": "icon48.png",
-      "128": "icon128.png"
-    }
+    "default_title": "阿里云账户切换器"
   }
 }
