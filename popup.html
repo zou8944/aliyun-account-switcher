@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>阿里云账户切换工具</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #444;
+            background-color: #f8f8f8;
+            width: 400px;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+
+        .text {
+            flex-grow: 1;
+            padding: 5px;
+        }
+
+        .text.selected {
+            font-weight: bold;
+            background-color: #ffffff;
+        }
+
+        .text.selectable {
+            cursor: pointer;
+            color: #00d;
+        }
+
+        .text.editing {
+            padding: 0;
+        }
+
+        .text.editing input {
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #444;
+            background-color: #f5f5f5;
+            border: none;
+            outline: none;
+            padding: 5px;
+            box-sizing: border-box;
+            width: 100%;
+            border-radius: 5px;
+        }
+
+        .button {
+            cursor: pointer;
+            padding: 5px;
+            margin-left: 10px;
+            background-color: #f5f5f5;
+            border: none;
+            outline: none;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+
+        .button:hover {
+            background-color: #e0e0e0;
+        }
+
+        .button.delete {
+            color: #d00;
+        }
+
+        .button.save {
+            color: #00d;
+        }
+
+        .button.hidden {
+            display: none;
+        }
+
+        .bottom-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+            padding: 10px;
+        }
+
+        .bottom-bar button {
+            cursor: pointer;
+            padding: 5px;
+            margin-left: 10px;
+            width: 50%;
+            background-color: #f5f5f5;
+            border: none;
+            outline: none;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+            font-size: medium;
+        }
+
+        .bottom-bar button:hover {
+            background-color: #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+<div id="cookie-container" class="container">
+    <div id="list-container">
+
+    </div>
+    <div id="new-account-btn" class="bottom-bar">
+        <button>登录新账号</button>
+    </div>
+</div>
+<script src="popup.js"></script>
+</body>
+</html>
