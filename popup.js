@@ -1,8 +1,9 @@
 const aliyunDomain = "aliyun.com";
+const aliyunAccountCookieName = "login_aliyunid";
 
 (async function () {
     const currentCookies = await chrome.cookies.getAll({domain: aliyunDomain});
-    const currentAccountCookie = currentCookies.find(item => item.name === "login_aliyunid");
+    const currentAccountCookie = currentCookies.find(item => item.name === aliyunAccountCookieName);
     const currentAccount = currentAccountCookie?.value?.replaceAll("\"", "");
     let storage = await getStorage();
 
@@ -74,7 +75,7 @@ async function accountDeletionListener(event) {
     await putStorage(storage);
     // 如果移除的是当前登录的账号，还要移除前台cookie
     const currentCookies = await chrome.cookies.getAll({domain: aliyunDomain});
-    const currentAccountCookie = currentCookies.find(item => item.name === "login_aliyunid");
+    const currentAccountCookie = currentCookies.find(item => item.name === aliyunAccountCookieName);
     const currentAccount = currentAccountCookie?.value?.replaceAll("\"", "");
     if (account === currentAccount) {
         currentCookies.map(deleteCookie);
