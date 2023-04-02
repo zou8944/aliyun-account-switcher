@@ -5,7 +5,8 @@ body {
     line-height: 1.5;
     color: #444;
     background-color: #f8f8f8;
-    width: 400px;
+    min-width: 400px;
+    max-width: 600px;
 }
 .container {
     font-family: "PingFang SC", "Helvetica Neue", Helvetica, "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
@@ -30,66 +31,64 @@ h2 {
     padding: 20px;
     margin-bottom: 20px;
 }
+
 .row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     background-color: #fff;
     border-radius: 4px;
     padding: 15px;
     margin-bottom: 10px;
     box-shadow: 0 2px 4px 0 rgba(0,0,0,0.1), 0 4px 12px 0 rgba(0,0,0,0.08);
 }
-.text {
+
+.row-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.row-main .display-name {
     flex-grow: 1;
+    font-size: 16px;
     padding: 5px;
 }
-.text.selected {
+.row-main .display-name.selected {
     font-weight: bold;
     background-color: #ffffff;
 }
-.text.selectable {
+.row-main .display-name.selectable {
     cursor: pointer;
     color: #00d;
 }
-.text.editing {
-    padding: 0;
-}
-.text.editing input {
-    font-family: Arial, sans-serif;
-    font-size: 14px;
-    line-height: 1.5;
-    color: #444;
-    background-color: #f5f5f5;
-    border: none;
-    outline: none;
-    padding: 5px;
-    box-sizing: border-box;
-    width: 100%;
-    border-radius: 5px;
-}
-.button {
+.row-main .button {
     font-size: 14px;
     color: #999;
     border-radius: 4px;
     border: 1px solid #d9d9d9;
-    padding: 8px 14px;
+    padding: 5px 5px;
+    margin: 0 5px;
+    text-align: center;
 }
-.button:hover {
+.row-main .button:hover {
     cursor: pointer;
 }
-.button.delete {
+.row-main .button.rename {
     background-color: #fff;
 }
-.delete:hover {
+.row-main .button.delete {
+    background-color: #fff;
+}
+.row-main .delete:hover {
     color: #ff6a00;
     border-color: #ff6a00;
 }
-.button.save {
-    color: #00d;
+.row-foot {
+    font-size: 12px;
+    color: #999999;
 }
-.button.hidden {
-    display: none;
+.row-foot .time-left {
+    color: green;
+}
+.row-foot .time-left.expired {
+    color: red;
 }
 
 /* 底部按钮 */

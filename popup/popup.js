@@ -10,11 +10,15 @@ const aliyunAccountCookieName = "login_aliyunid";
     // 如果当前已登录，则使用登录的cookie覆盖存储中的cookie
     if (currentAccount) {
         storage = storage || {};
-        storage[currentAccount] = {
-            account: currentAccount,
-            displayName: currentAccount,
-            cookies: currentCookies
-        };
+        if (storage[currentAccount]) {
+            storage[currentAccount].cookies = currentCookies;
+        } else {
+            storage[currentAccount] = {
+                account: currentAccount,
+                displayName: currentAccount,
+                cookies: currentCookies
+            };
+        }
         await putStorage(storage);
     }
 
@@ -26,16 +30,26 @@ const aliyunAccountCookieName = "login_aliyunid";
             const displayName = storage[name].displayName;
             const textClass = account === currentAccount ? "selected" : "selectable";
             textHTMLs.push(`<div class="row" id="row-${account}">
-                                <div class="text ${textClass}">${displayName}</div>
-                                <div class="button delete">退出</div>
+                                <div class="row-main">
+                                    <div class="display-name ${textClass}">${displayName}</div>
+                                    <div class="button rename">重命名</div>
+                                    <div class="button delete">退出</div>
+                                </div>
+                                <div class="row-foot">
+                                    <div class="account">账号: ${account}</div>
+<!--                                    <div class="time-left expired">剩余(预估): 1:12:2</div>-->
+                                </div>
                             </div>`);
         }
         document.getElementById("list-container").innerHTML = textHTMLs.join("\n");
     }
 
     // 文本点击事件：账号切换
-    const selectableTexts = document.getElementsByClassName("text");
+    const selectableTexts = document.getElementsByClassName("display-name");
     Array.from(selectableTexts).forEach(element => element.addEventListener("click", accountSwitchListener));
+    // 按钮点击事件：重命名
+    const renameButtons = document.getElementsByClassName("rename");
+    Array.from(renameButtons).forEach(element => element.addEventListener("click", accountRenameListener));
     // 按钮点击事件：账号删除
     const deleteButtons = document.getElementsByClassName("delete");
     Array.from(deleteButtons).forEach(element => element.addEventListener("click", accountDeletionListener));
@@ -65,6 +79,17 @@ async function accountSwitchListener(event) {
     event.target.classList.add("selected");
     // 刷新相关tab
     await refreshAllAliyunTabs();
+}
+
+async function accountRenameListener(event) {
+    const account = event.target.parentElement.parentElement.id.split("-")[1];
+    const newName = prompt("请输入新的账号名称：");
+    if (newName) {
+        const storage = await getStorage();
+        storage[account].displayName = newName;
+        await putStorage(storage);
+        event.target.parentElement.getElementsByClassName("display-name")[0].innerText = newName;
+    }
 }
 
 async function accountDeletionListener(event) {
