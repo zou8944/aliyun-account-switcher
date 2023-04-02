@@ -5,19 +5,18 @@ body {
     line-height: 1.5;
     color: #444;
     background-color: #f8f8f8;
-    min-width: 400px;
+    min-width: 500px;
     max-width: 600px;
 }
 .container {
     font-family: "PingFang SC", "Helvetica Neue", Helvetica, "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
     max-width: 960px;
-    margin: 0 auto;
+    margin: 0;
     padding: 20px;
 }
 
 /* 标题样式 */
 .title {
-    margin-bottom: 20px;
     text-align: center;
 }
 h2 {
@@ -29,13 +28,13 @@ h2 {
 #list-container {
     background-color: #f5f7fa;
     padding: 20px;
-    margin-bottom: 20px;
+    margin-bottom: 0;
 }
 
 .row {
     background-color: #fff;
     border-radius: 4px;
-    padding: 15px;
+    padding: 5px 10px;
     margin-bottom: 10px;
     box-shadow: 0 2px 4px 0 rgba(0,0,0,0.1), 0 4px 12px 0 rgba(0,0,0,0.08);
 }
@@ -76,7 +75,7 @@ h2 {
 .row-main .button.delete {
     background-color: #fff;
 }
-.row-main .delete:hover {
+.row-main .button:hover {
     color: #ff6a00;
     border-color: #ff6a00;
 }
