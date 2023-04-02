@@ -90,6 +90,12 @@ h2 {
 .row-foot .time-left.expired {
     color: red;
 }
+.row-foot .time-left.almost-expired {
+    color: yellow;
+}
+.row-foot .time-left.far-from-expired {
+    color: green;
+}
 
 /* 底部按钮 */
 .bottom-bar {

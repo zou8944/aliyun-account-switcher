@@ -18,13 +18,16 @@ async function put(object) {
     return await chrome.storage.local.set({[ALIYUN_DOMAIN]: object});
 }
 
-async function putAccount(accountName, accountObject) {
+async function putAccount(accountName, accountObject, overrideDisplayName = false) {
     let object = await get();
     object = object || {};
     if (object[accountName]) {
         object[accountName].cookies = accountObject.cookies;
         object[accountName].account = accountObject.account;
         object[accountName].creationTime = accountObject.creationTime;
+        if (overrideDisplayName) {
+            object[accountName].displayName = accountObject.displayName;
+        }
     } else {
         object[accountName] = accountObject;
     }
@@ -33,8 +36,8 @@ async function putAccount(accountName, accountObject) {
 
 async function removeAccount(accountName) {
     const object = await get();
-    delete object[accountName]
-    return await put(object)
+    delete object[accountName];
+    return await put(object);
 }
 
 export {

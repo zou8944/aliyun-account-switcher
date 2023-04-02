@@ -1,6 +1,14 @@
 const aliyunDomain = "aliyun.com";
 const aliyunAccountCookieName = "login_aliyunid";
 
+chrome.runtime.onInstalled.addListener(async function (details) {
+    await chrome.storage.local.clear();
+    chrome.cookies.getAll({domain: aliyunDomain}, (cookies) => {
+        cookies.map(deleteCookie);
+    });
+});
+
+
 (async function () {
     const currentCookies = await chrome.cookies.getAll({domain: aliyunDomain});
     const currentAccountCookie = currentCookies.find(item => item.name === aliyunAccountCookieName);

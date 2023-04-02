@@ -15,6 +15,9 @@ async function getAliyunAccount() {
 async function getAliyunAccountCreationTime() {
     const aliyunCookies = await getAllAliyunCookie();
     const aliyunAccountScCookie = aliyunCookies.find(item => item.name === ALIYUN_ACCOUNT_SC_COOKIE_NAME);
+    if (!aliyunAccountScCookie) {
+        return undefined;
+    }
     const creationTime = new Date(aliyunAccountScCookie.expirationDate * 1000);
     // 取 login_aliyunid_sc 创建时间的一个月前
     if (creationTime.getMonth() === 0) {
@@ -40,7 +43,7 @@ async function restoreOne(cookie) {
     const protocol = cookie.secure ? "https" : "http";
     const domain = cookie.domain.charAt(0) === "." ? cookie.domain.substring(1) : cookie.domain;
     const cookieUrl = `${protocol}://${domain}${cookie.path}`;
-    return chrome.cookies.set({
+    return await chrome.cookies.set({
         url: cookieUrl,
         name: cookie.name,
         value: cookie.value,
@@ -49,10 +52,7 @@ async function restoreOne(cookie) {
         secure: cookie.secure,
         httpOnly: cookie.httpOnly,
         expirationDate: cookie.expirationDate,
-        creationTime: cookie.creationTime,
         storeId: cookie.storeId
-    }).catch((error) => {
-        console.log(error);
     });
 }
 
