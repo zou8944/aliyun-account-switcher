@@ -1,33 +1,29 @@
-const aliyunDomain = "aliyun.com";
-const aliyunAccountCookieName = "login_aliyunid";
+import * as cookie from "./cookie.js";
+import * as storage from "./storage.js";
 
 (async function () {
-    const currentCookies = await chrome.cookies.getAll({domain: aliyunDomain});
-    const currentAccountCookie = currentCookies.find(item => item.name === aliyunAccountCookieName);
-    const currentAccount = currentAccountCookie?.value?.replaceAll("\"", "");
-    let storage = await getStorage();
+    const aliyunCookies = await cookie.getAllAliyunCookie();
+    const currentAccount = await cookie.getAliyunAccount();
+    const creationTime = await cookie.getAliyunAccountCreationTime();
 
-    // 如果当前已登录，则使用登录的cookie覆盖存储中的cookie
+    let storedObject = await storage.get();
+
     if (currentAccount) {
-        storage = storage || {};
-        if (storage[currentAccount]) {
-            storage[currentAccount].cookies = currentCookies;
-        } else {
-            storage[currentAccount] = {
-                account: currentAccount,
-                displayName: currentAccount,
-                cookies: currentCookies
-            };
-        }
-        await putStorage(storage);
+        // 如果当前已登录，则使用登录的cookie覆盖存储中的cookie
+        await storage.putAccount(currentAccount, {
+            account: currentAccount,
+            displayName: currentAccount,
+            cookies: aliyunCookies,
+            creationTime: creationTime,
+        });
     }
 
     // 如果存储中有数据，则渲染账号列表
-    if (storage) {
+    if (storedObject) {
         const textHTMLs = [];
-        for (let name in storage) {
-            const account = storage[name].account;
-            const displayName = storage[name].displayName;
+        for (let name in storedObject) {
+            const account = storedObject[name].account;
+            const displayName = storedObject[name].displayName;
             const textClass = account === currentAccount ? "selected" : "selectable";
             textHTMLs.push(`<div class="row" id="row-${account}">
                                 <div class="row-main">
@@ -63,13 +59,11 @@ async function accountSwitchListener(event) {
     if (event.target.classList.contains("selected")) {
         return;
     }
-    const account = event.target.parentElement.id.split("-")[1];
+    const accountName = event.target.parentElement.parentElement.id.split("-")[1];
     // 移除当前cookie
-    const currentCookies = await chrome.cookies.getAll({domain: aliyunDomain});
-    currentCookies.map(deleteCookie);
+    (await cookie.getAllAliyunCookie()).map(cookie.removeOne);
     // 恢复选中账号的cookie
-    const storage = await getStorage();
-    storage[account].cookies.map(restoreCookie);
+    (await storage.getAccount(accountName)).cookies.map(cookie.restoreOne);
     // 重置样式
     Array.from(document.getElementsByClassName("selected")).forEach((item) => {
         item.classList.remove("selected");
@@ -82,79 +76,41 @@ async function accountSwitchListener(event) {
 }
 
 async function accountRenameListener(event) {
-    const account = event.target.parentElement.parentElement.id.split("-")[1];
+    const accountName = event.target.parentElement.parentElement.id.split("-")[1];
     const newName = prompt("请输入新的账号名称：");
     if (newName) {
-        const storage = await getStorage();
-        storage[account].displayName = newName;
-        await putStorage(storage);
+        const accountObject = await storage.getAccount(accountName);
+        accountObject.displayName = newName;
+        await storage.putAccount(accountName, accountObject);
         event.target.parentElement.getElementsByClassName("display-name")[0].innerText = newName;
     }
 }
 
 async function accountDeletionListener(event) {
-    const account = event.target.parentElement.id.split("-")[1];
+    const accountName = event.target.parentElement.parentElement.id.split("-")[1];
     // 移除选中的cookie
-    const storage = await getStorage();
-    delete storage[account];
-    await putStorage(storage);
+    await storage.removeAccount(accountName);
     // 如果移除的是当前登录的账号，还要移除前台cookie
-    const currentCookies = await chrome.cookies.getAll({domain: aliyunDomain});
-    const currentAccountCookie = currentCookies.find(item => item.name === aliyunAccountCookieName);
-    const currentAccount = currentAccountCookie?.value?.replaceAll("\"", "");
-    if (account === currentAccount) {
-        currentCookies.map(deleteCookie);
+    const currentCookies = await cookie.getAllAliyunCookie();
+    const currentAccount = await cookie.getAliyunAccount();
+    console.log(accountName)
+    console.log(currentAccount)
+    if (accountName === currentAccount) {
+        currentCookies.map(cookie.removeOne);
         await refreshAllAliyunTabs();
     }
     // 移除当前行的html元素
-    const currentRow = event.target.parentElement;
+    const currentRow = event.target.parentElement.parentElement;
     currentRow.parentElement.removeChild(currentRow);
 }
 
 async function accountCreateListener(event) {
-    const currentCookies = await chrome.cookies.getAll({domain: aliyunDomain});
-    currentCookies.map(deleteCookie);
+    const currentCookies = await cookie.getAllAliyunCookie();
+    currentCookies.map(cookie.removeOne);
     const loginUrl = `https://signin.aliyun.com/login.htm`;
     await chrome.tabs.create({url: loginUrl});
 }
 
-async function getStorage() {
-    const storage = await chrome.storage.local.get(aliyunDomain);
-    return storage[aliyunDomain];
-}
-
-async function putStorage(object) {
-    return await chrome.storage.local.set({[aliyunDomain]: object});
-}
-
-function deleteCookie(cookie) {
-    const protocol = cookie.secure ? "https" : "http";
-    const cookieUrl = `${protocol}://${cookie.domain}${cookie.path}`;
-    return chrome.cookies.remove({
-        url: cookieUrl,
-        name: cookie.name,
-        storeId: cookie.storeId
-    });
-}
-
-function restoreCookie(cookie) {
-    const protocol = cookie.secure ? "https" : "http";
-    const domain = cookie.domain.charAt(0) === "." ? cookie.domain.substring(1) : cookie.domain;
-    const cookieUrl = `${protocol}://${domain}${cookie.path}`;
-    return chrome.cookies.set({
-        url: cookieUrl,
-        name: cookie.name,
-        value: cookie.value,
-        domain: cookie.domain,
-        path: cookie.path,
-        secure: cookie.secure,
-        httpOnly: cookie.httpOnly,
-        expirationDate: cookie.expirationDate,
-        storeId: cookie.storeId
-    }).catch((error) => {
-        console.log(error);
-    });
-}
 
 async function clearAllCookie() {
     await chrome.storage.local.clear();
