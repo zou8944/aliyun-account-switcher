@@ -16,6 +16,7 @@ import * as storage from "./storage.js";
 
     await renderPopupListFromStorage(currentAccount);
     await bindActionInPopupList();
+    await updateBadgeText();
 
 })();
 
@@ -95,6 +96,7 @@ async function accountSwitchListener(event) {
     event.target.classList.add("selected");
     // 刷新相关tab
     await refreshAllAliyunTabs();
+    await updateBadgeText();
 }
 
 async function accountRenameListener(event) {
@@ -122,6 +124,7 @@ async function accountDeletionListener(event) {
     // 移除当前行的html元素
     const currentRow = event.target.parentElement.parentElement;
     currentRow.parentElement.removeChild(currentRow);
+    await updateBadgeText();
 }
 
 async function accountCreateListener(event) {
@@ -136,4 +139,8 @@ async function refreshAllAliyunTabs() {
     tabs.map((tab) => {
         chrome.tabs.reload(tab.id);
     });
+}
+
+async function updateBadgeText() {
+    await chrome.runtime.sendMessage({"type": "updateBadgeText"});
 }
